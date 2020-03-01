@@ -154,7 +154,8 @@ termux_step_start_build() {
 		 "$TERMUX_PKG_TMPDIR" \
 		 "$TERMUX_PKG_CACHEDIR" \
 		 "$TERMUX_PKG_MASSAGEDIR" \
-		 $TERMUX_PREFIX/{bin,etc,lib,libexec,share,share/LICENSES,tmp,include}
+		 $TERMUX_PREFIX/{bin,etc,lib,libexec,share/LICENSES,tmp,include} \
+		 $TERMUX_PKG_MASSAGEDIR/$TERMUX_PREFIX/{bin,etc,lib,libexec,share/LICENSES,tmp,include}
 
 	# Make $TERMUX_PREFIX/bin/sh executable on the builder, so that build
 	# scripts can assume that it works on both builder and host later on:
