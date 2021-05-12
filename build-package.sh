@@ -138,6 +138,10 @@ source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_host_build.sh"
 # shellcheck source=scripts/build/termux_step_setup_toolchain.sh
 source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_setup_toolchain.sh"
 
+# Create a timestamp file so that we can check if any files were updated.
+# shellcheck source=scripts/build/termux_step_get_timestamp.sh
+source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_get_timestamp.sh"
+
 # Apply all *.patch files for the package. Not to be overridden by packages.
 # shellcheck source=scripts/build/termux_step_patch_package.sh
 source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_patch_package.sh"
@@ -193,9 +197,10 @@ source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_install_service_scripts.sh"
 # shellcheck source=scripts/build/termux_step_install_license.sh
 source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_install_license.sh"
 
-# Function to cp (through tar) installed files to massage dir
-# shellcheck source=scripts/build/termux_step_extract_into_massagedir.sh
-source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_extract_into_massagedir.sh"
+# Check so that we have not modified $TERMUX_PREFIX, all files should
+# be installed into $TERMUX_PKG_MASSAGEDIR.
+# source=scripts/build/termux_step_check_prefix_integrity.sh
+source "$TERMUX_SCRIPTDIR/scripts/build/termux_step_check_prefix_integrity.sh"
 
 # Hook function to create {pre,post}install, {pre,post}rm-scripts for subpkgs
 termux_step_create_subpkg_debscripts() {
@@ -374,6 +379,7 @@ while (($# > 0)); do
 		fi
 
 		termux_step_setup_toolchain
+		termux_step_get_timestamp
 		termux_step_patch_package
 		termux_step_replace_guess_scripts
 		cd "$TERMUX_PKG_SRCDIR"
@@ -392,10 +398,8 @@ while (($# > 0)); do
 		termux_step_post_make_install
 		termux_step_install_service_scripts
 		termux_step_install_license
-		if [ "$TERMUX_ON_DEVICE_BUILD" = "false" ]; then
-			cd "$TERMUX_PKG_MASSAGEDIR"
-			termux_step_extract_into_massagedir
-		fi
+		termux_step_check_prefix_integrity
+		cd "$TERMUX_PKG_MASSAGEDIR"
 		termux_step_massage
 		cd "$TERMUX_PKG_MASSAGEDIR/$TERMUX_PREFIX"
 		termux_step_post_massage
