@@ -374,9 +374,7 @@ while (($# > 0)); do
 		termux_step_get_source
 		cd "$TERMUX_PKG_SRCDIR"
 		termux_step_post_get_source
-		if [ "$TERMUX_ON_DEVICE_BUILD" = "false" ]; then
-			termux_step_handle_hostbuild
-		fi
+		termux_step_handle_hostbuild
 
 		termux_step_setup_toolchain
 		termux_step_get_timestamp

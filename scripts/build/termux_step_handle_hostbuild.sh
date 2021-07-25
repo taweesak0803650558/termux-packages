@@ -10,6 +10,12 @@ termux_step_handle_hostbuild() {
 		done
 	fi
 
+	if [ "$TERMUX_ON_DEVICE_BUILD" = "true" ]; then
+		# We do not need to hostbuild on device since we are
+		# not cross-compiling
+		return
+	fi
+
 	local TERMUX_HOSTBUILD_MARKER="$TERMUX_PKG_HOSTBUILD_DIR/TERMUX_BUILT_FOR_$TERMUX_PKG_VERSION"
 	if [ ! -f "$TERMUX_HOSTBUILD_MARKER" ]; then
 		if [ "$TERMUX_PKG_QUICK_REBUILD" = "false" ]; then
